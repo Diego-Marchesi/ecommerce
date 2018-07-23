@@ -55,7 +55,7 @@ const SESSION = "User";
 			|| 
 		 	!$_SESSION[User::SESSION] 
 		 	|| 
-		 	(int)$_SESSION[User::SESSION]["iduser"] > 0
+		 	!(int)$_SESSION[User::SESSION]["iduser"] > 0
 		 	||
 		 	(bool)$_SESSION[User::SESSION]["inadmin"]!==$inadmin
 		
@@ -67,7 +67,12 @@ const SESSION = "User";
 		}
 	}
 
-	
+	public static function logout(){
+
+		$_SESSION[User::SESSION] = NULL;
+	}
+
+
 }
 
 

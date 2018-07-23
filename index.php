@@ -50,6 +50,16 @@ $app->post('/admin/login', function() {
 
 });
 
+
+//executa logout
+$app->get('/admin/logout', function() {
+    
+	User::logout();
+	header("Location: /admin/login");
+	exit;
+
+});
+
 $app->run();
 
  ?>
