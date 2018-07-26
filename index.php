@@ -163,6 +163,42 @@ $app->post('/admin/users/:iduser', function($iduser) {
 });
 
 
+//executa arquivo forgot.html dentro da views tela de esqueci a senha
+$app->get('/admin/forgot', function() {
+    
+    $page = new PageAdmin([
+		"header"=>false,//desbilitando o heder e o footer
+		"footer"=>false
+	]);
+	$page->setTpl("forgot");
+	
+	
+
+});
+
+//pega o email do esqueci minha senha enviado pelo usuario
+$app->post('/admin/forgot', function() {
+    
+    $user = User::getForgot($_POST["email"]);
+	
+	header("Location: /admin/forgot/sent");
+	exit;
+
+});
+
+//pega o email do esqueci minha senha enviado pelo usuario
+$app->get('/admin/forgot/sent', function() {
+    
+     $page = new PageAdmin([
+		"header"=>false,//desbilitando o heder e o footer
+		"footer"=>false
+	]);
+	$page->setTpl("forgot-sent");
+   
+	exit;
+
+});
+
 
 
 $app->run();
