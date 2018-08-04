@@ -51,4 +51,22 @@ $app->get('/categories/:idcategory', function($idcategory) {
 });
 
 
+
+// criando caracteristicas do produto
+$app->get('/products/:desurl', function($desurl) {
+
+	$product = new Product();
+
+	$product->getFromURL($desurl);
+
+	 $page = new Page();
+
+	$page->setTpl("product-detail", array(
+		"product"=>$product->getValues(),
+		"categories"=>$product->getCategories()
+	));
+
+});
+
+
 ?>
