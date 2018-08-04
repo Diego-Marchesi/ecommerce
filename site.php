@@ -29,21 +29,21 @@ $app->get('/categories/:idcategory', function($idcategory) {
 
 	$pagination = $category->getProductsPage($page);
 
-	$pages  = array();
+	$pages  = [];
 
 	for ($i=1; $i <= $pagination['pages']; $i++) { 
-		array_push($pages, array(
+		array_push($pages, [
 			"link"=>"/categories/".$category->getidcategory()."?page=".$i,
 			"page"=>$i
-		));
+		]);
 	}
 
 	 $page = new Page();
 
 	$page->setTpl("category", array(
 		"category"=>$category->getValues(),
-		"pages"=>$pages,
-		"products"=>$pagination["data"]
+		"products"=>$pagination["data"],
+		"pages"=>$pages
 	));
 	        
 	exit;
