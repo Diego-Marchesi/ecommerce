@@ -15,6 +15,43 @@ class User extends Model
 
 const SESSION = "User";
 const SECRET = "HcodePhp7_Secret";
+	
+	public static function getFromSession(){
+
+		$user = new User();
+
+		if (isset($_SESSION[User::SESSION])  && (int)$_SESSION[User::SESSION]["iduser"]>0) {
+		
+
+			$user->setData($_SESSION[User::SESSION]);
+		}
+
+		return $user;
+	}
+
+	// verificar se o usuario que faz compras esta logado ou não
+	public static function checkLogin($inadmin = true){
+		if (!isset($_SESSION[User::SESSION])
+			|| 
+		 	!$_SESSION[User::SESSION] 
+		 	|| 
+		 	!(int)$_SESSION[User::SESSION]["iduser"] > 0){
+
+			return false;
+		}else{
+			// so acontece se tentar acessar uma rota de admin
+			if ($inadmin === true && (bool)$_SESSION[User::SESSION]["inadmin"] === true) {
+				return true;
+			}else if ($inadmin === false) {
+				return true;
+			}else{
+				return false;
+			}
+		}
+
+	}
+
+
 
 	public static function login($login, $password){
 
@@ -53,15 +90,7 @@ const SECRET = "HcodePhp7_Secret";
 
 
 	public static function verifyLogin($inadmin = true){
-		if (!isset($_SESSION[User::SESSION])
-			|| 
-		 	!$_SESSION[User::SESSION] 
-		 	|| 
-		 	!(int)$_SESSION[User::SESSION]["iduser"] > 0
-		 	||
-		 	(bool)$_SESSION[User::SESSION]["inadmin"]!==$inadmin
-		
-		) {
+		if (User::checkLogin($inadmin)) {
 
 			header("Location: /admin/login");
 			exit;
