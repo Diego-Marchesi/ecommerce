@@ -15,6 +15,8 @@ class User extends Model
 
 const SESSION = "User";
 const SECRET = "HcodePhp7_Secret";
+const ERROR = "UserError";
+const ERROR_REGISTER = "userErrorregister";
 	
 	public static function getFromSession(){
 
@@ -57,7 +59,7 @@ const SECRET = "HcodePhp7_Secret";
 
 		$sql = new Sql();
 
-		$results = $sql->select("SELECT * FROM tb_users WHERE deslogin = :LOGIN", array(
+		$results = $sql->select("SELECT * FROM tb_users a INNER JOIN tb_persons b ON a.idperson = b.idperson WHERE deslogin = :LOGIN", array(
 			":LOGIN"=>$login
 
 		));
@@ -69,10 +71,14 @@ const SECRET = "HcodePhp7_Secret";
 
 		$data = $results[0];
 
+		
+
 		if (password_verify($password, $data["despassword"]) === true) {
 		 	
 
 		 	$user = new User();
+
+		 	$data["desperson"] = utf8_encode($data["desperson"]);
 
 		 	$user->setData($data);
 
@@ -90,10 +96,17 @@ const SECRET = "HcodePhp7_Secret";
 
 
 	public static function verifyLogin($inadmin = true){
-		if (User::checkLogin($inadmin)) {
+		if (!User::checkLogin($inadmin)) {
 
-			header("Location: /admin/login");
+			if ($inadmin) {
+				header("Location: /admin/login");
+			}else{
+			header("Location:/login");
+
+			}
 			exit;
+
+					
 
 		}
 	}
@@ -115,9 +128,9 @@ const SECRET = "HcodePhp7_Secret";
 
 		
 		$results = $sql->select("CALL sp_users_save(:desperson,:deslogin,:despassword,:desemail,:nrphone,:inadmin)", array(
-			":desperson"=>$this->getdesperson(),
+			":desperson"=>utf8_decode($this->getdesperson()),
 			":deslogin"=>$this->getdeslogin(),
-			":despassword"=>$this->getdespassword(),
+			":despassword"=>User::getdespasswordHash($this->getdespassword()),
 			":desemail"=>$this->getdesemail(),
 			":nrphone"=>$this->getnrphone(),
 			":inadmin"=>$this->getinadmin()
@@ -135,8 +148,11 @@ const SECRET = "HcodePhp7_Secret";
 			":iduser"=>$iduser
 		));
 
+		$data = $results[0];
 
-		$this->setData($results[0]);
+		$data["desperson"] = utf8_encode($data["desperson"]);
+
+		$this->setData($data);
 	}
 
 
@@ -147,9 +163,9 @@ const SECRET = "HcodePhp7_Secret";
 		
 		$results = $sql->select("CALL sp_usersupdate_save(:iduser,:desperson,:deslogin,:despassword,:desemail,:nrphone,:inadmin)", array(
 			":iduser"=>$this->getiduser(),
-			":desperson"=>$this->getdesperson(),
+			":desperson"=>utf8_decode($this->getdesperson()),
 			":deslogin"=>$this->getdeslogin(),
-			":despassword"=>$this->getdespassword(),
+			":despassword"=>User::getdespasswordHash($this->getdespassword()),
 			":desemail"=>$this->getdesemail(),
 			":nrphone"=>$this->getnrphone(),
 			":inadmin"=>$this->getinadmin()
@@ -261,6 +277,59 @@ const SECRET = "HcodePhp7_Secret";
 
 		));
 
+	}
+
+	public static function setError($msg){
+		$_SESSION[User::ERROR] = $msg;
+	}
+
+
+	public static function getError(){
+		$msg = (isset($_SESSION[User::ERROR])&& $_SESSION[User::ERROR])? $_SESSION[User::ERROR] : '';
+
+		User::clearError();
+
+		return $msg;
+	}
+
+	public static function clearError(){
+
+		$_SESSION[User::ERROR] = NULL;
+	}
+
+	public static function setErrorRegister($msg){
+		$_SESSION[User::ERROR_REGISTER] = $msg;	
+	}
+
+	public static function getErrorRegister(){
+		 $msg = (isset($_SESSION[User::ERROR_REGISTER]) && $_SESSION[User::ERROR_REGISTER]) ? $_SESSION[User::ERROR_REGISTER] : '';
+
+		 User::clearErrorRergister();
+
+		 return $msg;
+	}
+
+	public static function clearErrorRergister(){
+
+		$_SESSION[User::ERROR_REGISTER] = NULL;
+	}
+
+	public static function checkLoginExist($login){
+
+		$sql = new Sql();
+
+		$results = $sql->select("SELECT * FROM tb_users WHERE deslogin = :deslogin", array(
+			":deslogin"=>$login
+		));
+
+		return (count($results)>0);
+	}
+
+
+	public static function getdespasswordHash($password){
+		return password_hash($password, PASSWORD_DEFAULT, [
+			'cost'=>12
+		]);
 	}
 
 
