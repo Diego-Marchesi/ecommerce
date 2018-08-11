@@ -187,7 +187,9 @@ $app->get('/login', function() {
 	$page = new Page();
 
 	$page->setTpl("login", array(
-		"error"=>User::getError()
+		"error"=>User::getError(),
+		"errorRegister"=>User::getErrorRegister(),
+		"registerValues"=>(isset($_SESSION['registerValues']))?$_SESSION['registerValues']: ["name"=>"", "email"=>"", "phone"=>""]
 	));
 
 });
@@ -220,5 +222,69 @@ $app->get('/logout', function() {
 	exit;
 
 });
+
+
+$app->post('/register', function() {
+
+	$_SESSION['registerValues'] = $_POST;
+	
+
+	if (!isset($_POST["name"]) || $_POST["name"] == '') {
+
+		User::setErrorRegister("Preencha seu nome.");
+
+		header("Location: /login");
+		exit;
+		
+	}
+
+	if (!isset($_POST["email"]) || $_POST["email"] == '') {
+
+		User::setErrorRegister("Preencha seu e-mail.");
+
+		header("Location: /login");
+		exit;
+		
+	}
+
+	if (!isset($_POST["password"]) || $_POST["password"] == '') {
+
+		User::setErrorRegister("Preencha a senha.");
+
+		header("Location: /login");
+		exit;
+		
+	}
+
+	if (User::checkLoginExist($_POST["email"]) === true) {
+
+		User::setErrorRegister("Este endereço de e-mail já está sendo usado por outro usuário.");
+
+		header("Location: /login");
+		exit;
+	}else{
+
+	$user = new User();
+
+	$user->setData(array(
+		"inadmin" =>0,
+		"desperson"=>$_POST["name"],
+		"deslogin"=>$_POST["email"],
+		"despassword"=>$_POST["password"],
+		"desemail"=>$_POST["email"],
+		"nrphone"=>$_POST["phone"]
+	));
+
+	$user->save();
+
+	$user->login($_POST["email"], $_POST["password"]);
+
+	header("Location: /checkout");
+	exit;
+	}
+	
+
+});
+
 
 ?>
