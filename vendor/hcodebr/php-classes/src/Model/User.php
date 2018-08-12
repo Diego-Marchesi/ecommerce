@@ -181,7 +181,7 @@ const ERROR_REGISTER = "userErrorregister";
 		));
 	}
 
-	public static function getForgot($email){
+	public static function getForgot($email, $inadmin = true){
 
 		$sql = new Sql();
 
@@ -210,9 +210,14 @@ const ERROR_REGISTER = "userErrorregister";
 			else{
 				$dataRecovery = $results2[0];
 
-				$code = base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_128, User::SECRET, $dataRecovery["idrecovery"], MCRYPT_MODE_ECB));
+			$code = base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_128, User::SECRET, $dataRecovery["idrecovery"], MCRYPT_MODE_ECB));
 
-				$link = "http://127.0.0.1:8080/admin/forgot/reset?code=$code";
+				if ($inadmin === true) {
+					$link = "http://127.0.0.1:8080/admin/forgot/reset?code=$code";
+				}else{
+					$link = "http://127.0.0.1:8080/forgot/reset?code=$code";
+				}
+				
 
 				$mailer = new Mailer($data["desemail"], $data["desperson"], "redefinição de senha da Hcode store", "forgot", array(
 
