@@ -17,6 +17,7 @@ const SESSION = "User";
 const SECRET = "HcodePhp7_Secret";
 const ERROR = "UserError";
 const ERROR_REGISTER = "userErrorregister";
+const SUCCESS = "userSuccess";
 	
 	public static function getFromSession(){
 
@@ -171,6 +172,7 @@ const ERROR_REGISTER = "userErrorregister";
 			":inadmin"=>$this->getinadmin()
 		));
 
+		
 		$this->setData($results[0]);
 	}
 
@@ -301,6 +303,29 @@ const ERROR_REGISTER = "userErrorregister";
 
 		$_SESSION[User::ERROR] = NULL;
 	}
+
+
+
+	public static function setSuccess($msg){
+		$_SESSION[User::SUCCESS] = $msg;
+	}
+
+
+	public static function getSuccess(){
+		$msg = (isset($_SESSION[User::SUCCESS])&& $_SESSION[User::SUCCESS])? $_SESSION[User::SUCCESS] : '';
+
+		User::clearSuccess();
+
+		return $msg;
+	}
+
+	public static function clearSuccess(){
+
+		$_SESSION[User::SUCCESS] = NULL;
+	}
+
+
+
 
 	public static function setErrorRegister($msg){
 		$_SESSION[User::ERROR_REGISTER] = $msg;	
