@@ -210,6 +210,8 @@ public function save(){
 			
 			$result = $xml->Servicos->cServico;
 
+			
+
 			if ($result->MsgErro != '') {
 				Cart::setMsgError($result->MsgErro);
 				
