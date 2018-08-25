@@ -210,7 +210,7 @@ public function save(){
 			
 			$result = $xml->Servicos->cServico;
 
-			
+
 
 			if ($result->MsgErro != '') {
 				Cart::setMsgError($result->MsgErro);
@@ -292,6 +292,7 @@ public function save(){
 		$this->setvlsubtotal($totals["vlprice"]);
 		$this->setvltotal($totals["vlprice"] + $this->getvlfreight());
 
+	
 	}
 
 }
