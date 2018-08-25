@@ -273,7 +273,7 @@ $app->post('/checkout', function() {
 
 	$cart = Cart::getFromSession();
 
-	$totals = $cart->getCalculateTotal();
+	$cart->getCalculateTotal();
 
 
 	$order = new Order();
@@ -655,4 +655,48 @@ require_once($path."layout_itau.php");
 
 });
 
+
+//criando detaLHES DO PEDIDO
+$app->get('/profile/orders', function() {
+
+	User::verifyLogin(false);
+
+	$user = User::getFromSession();
+
+	
+	
+	$page = new Page();
+
+	$page->setTpl("profile-orders", array(
+		"orders"=>$user->getOrders()
+	));
+  
+});
+
+
+//criando detaLHES DO produto
+$app->get('/profile/orders/:idorder', function($idorder) {
+
+	User::verifyLogin(false);
+
+	$order = new Order();
+
+	$order->get((int)$idorder);
+
+	$cart = new Cart();
+	
+	$cart->get((int)$order->getidcart());
+
+	$cart->getCalculateTotal();
+
+	
+	$page = new Page();
+
+	$page->setTpl("profile-orders-detail", array(
+		"order"=>$order->getValues(),
+		"cart"=>$cart->getValues(),
+		"products"=>$cart->getProducts()
+	));
+  
+});
 ?>
