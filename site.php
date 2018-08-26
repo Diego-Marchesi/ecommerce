@@ -338,6 +338,10 @@ $app->get('/logout', function() {
 	
 	User::logout();
 
+	Cart::removeFromSession();
+
+    session_regenerate_id();
+
 	header("Location: /login");
 	exit;
 

@@ -283,6 +283,12 @@ public function save(){
 		return parent::getValues();
 	}
 
+
+	public static function removeFromSession(){
+    $_SESSION[Cart::SESSION] = NULL;
+}
+
+
 	public function getCalculateTotal(){
 
 		$this->updateFreight();

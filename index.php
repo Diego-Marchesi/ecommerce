@@ -23,6 +23,7 @@ require_once("admin_categories.php");
 
 require_once("admin_products.php");
 
+require_once("admin_orders.php");
 
 
 
