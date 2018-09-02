@@ -298,7 +298,7 @@ $app->post('/checkout', function() {
 			header("Location: /order/".$order->getidorder()."/pagseguro");//para redireciona para o pagseguro
 			break;
 
-		case 1:
+		case 2:
 			header("Location: /order/".$order->getidorder()."/paypal");//para redireciona para o paypal
 			break;
 		
