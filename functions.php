@@ -24,6 +24,17 @@ function getUserName(){
 	return $user->getdesperson();
 }
 
+function getUserIduser(){
+	$user = User::getFromSession();
+	return $user->getiduser();
+}
+
+function getUserDate(){
+	$user = User::getFromSession();
+	$date = $user->getdtregister();
+	return substr($date, 0, 4);
+}
+
 function getCartNrQtd(){
 
 	$cart = Cart::getFromSession();

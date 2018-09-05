@@ -186,5 +186,19 @@ $app->post('/admin/users/:iduser', function($iduser) {
 });
 
 
+//executa pagina profile do admin
+$app->get('/admin/Profile', function() {
+    
+	User::verifyLogin();
+
+	$user = User::getFromSession();
+	
+    
+	$page = new PageAdmin();
+	$page->setTpl("profile_admin");
+
+});
+
+
 
 ?>
