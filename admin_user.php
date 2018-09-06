@@ -195,7 +195,9 @@ $app->get('/admin/Profile', function() {
 	
     
 	$page = new PageAdmin();
-	$page->setTpl("profile_admin");
+	$page->setTpl("profile_admin",array(
+		"user"=>$user->getValues()
+	));
 
 });
 
